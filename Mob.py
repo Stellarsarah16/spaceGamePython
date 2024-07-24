@@ -40,7 +40,8 @@ class Mob:
         for idx, enemy in enumerate(self.enemies):
             #print(f"Enemy {idx+1} Bullets:")
             for bullet in enemy.bullets:
-                print(f" - Position ({bullet.x}, {bullet.y})")
+                #print(f" - Position ({bullet.x}, {bullet.y})")
+                pass
 
     def draw(self, screen):
         for enemy in self.enemies:

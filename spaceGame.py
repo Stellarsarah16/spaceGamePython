@@ -1,73 +1,59 @@
-import pygame
+import pygame, sys
 from player import Player
 from settings import *
 from Mob import Mob
+from EnemyShip import EnemyShip
+from eventHandler import EventHandler
 
-# Initialize the game
-pygame.init()   
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Space Game')
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption('Space Game')
 
-background = pygame.transform.scale(pygame.image.load('assets\\Background\\spr_stars01.png').convert(), (WIDTH, HEIGHT))
+        self.background = pygame.transform.scale(pygame.image.load('assets\\Background\\spr_stars01.png').convert(), (WIDTH, HEIGHT))
 
-all_sprites = pygame.sprite.Group()
+        self.all_sprites = pygame.sprite.Group()
 
-# Create instance of Player
-player = Player(400, 250, *PLAYER_SIZE)
-#enemy = EnemyShip(400, 100)
-all_sprites.add(player)
-mob = Mob(player.x, player.y, 5, 200)
+        self.player = Player(400, 250, *PLAYER_SIZE, self.screen)
+        self.all_sprites.add(self.player)
 
-#enemies = []
-#for x in range(ENEMY_COUNT):
-#    enemies.append(EnemyShip(300 + (20*x), 100+(20*x)))
+        self.enemy = EnemyShip(400, 100)
+        # self.mob = Mob(self.player.x, self.player.y, 5, 200)
+        #self.event_handler = EventHandler(self.player, self)
 
-running = True
-while running:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
+    def run(self):
+        
+        while True:
+            #self.event_handler.handleEvents(self.player, self)
 
-        # rotate and thrust
-        elif event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_a & event.key == pygame.K_d):
-                pass
-            elif event.key == pygame.K_a:
-                player.rotate_left()
-            elif event.key == pygame.K_d:
-                player.rotate_right()
-            elif event.key == pygame.K_SPACE:
-                player.thrust()
-                
-                print(player.getStats()) #print player stats for debug mode
+            for event in pygame.event.get(): 
+                if event.type == pygame.QUIT:
+                    self.quit()
+                    sys.exit()
+            self.all_sprites.update()
+            self.enemy.update((self.player.x, self.player.y))
+            # self.mob.update(self.player.x, self.player.y)
 
-        # stop rotation or thrust        
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_a or event.key == pygame.K_d:
-                player.stop_rotation()
-            elif event.key == pygame.K_SPACE:
-                player.stop_thrust()
-                print(player.getStats()) #print player stats for debug mode
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(self.background, (0, 0))
+            self.all_sprites.draw(self.screen)
 
+            self.enemy.draw(self.screen)
+            # self.mob.draw(self.screen)
 
-    all_sprites.update()
-    #for enemy in enemies:
-    #enemy.update((player.x, player.y))
-    mob.update(player.x, player.y)
-    # Clear the screen
-    screen.fill((0, 0, 0))
+            pygame.display.flip()
+            self.clock.tick(60)
 
-    # Draw to screen
-    screen.blit(background, (0, 0))
-    all_sprites.draw(screen)
-    
-    
-    #for enemy in enemies:
-    mob.draw(screen) 
+    def quit(self):
+        pygame.quit()
+        exit()
 
-    # Update the display
-    pygame.display.flip()
-    clock.tick(60)
+    def setRunOff(self):
+        self.running = False
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
+    game.quit()

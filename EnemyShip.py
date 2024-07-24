@@ -18,10 +18,10 @@ class EnemyShip(pygame.sprite.Sprite):
         # position and velocity
         self.x = x
         self.y = y
-        self.velocity = 1.0
+        self.velocity = 2.0
         self.angle = 0.0
-        self.angular_velocity = 0.0
-        self.acceleration = 0.5
+        self.angular_velocity = 1.0
+        self.acceleration = 1
 
     def update(self, player_pos):
         # Calculate angle towards player
